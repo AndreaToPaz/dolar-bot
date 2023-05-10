@@ -2,30 +2,44 @@ from flask import Flask
 import tweepy
 import configparser
 import telebot
+from telebot import types
 
 
-# Read KEYS from Config file
+# READ KEYS FROM CONFIG INI
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-#Twitter Keys
+#TWITTER KEYS
 API_KEY = config ['Twitter'] ['API_KEY']
 API_KEY_SECRET = config ['Twitter'] ['API_KEY_SECRET']
 ACCESS_TOKEN = config ['Twitter'] ['ACCESS_TOKEN']
 ACCESS_TOKEN_SECRET = config ['Twitter'] ['ACCESS_TOKEN_SECRET']
 
-#Telegram Bot Key
-#BOT_KEY = config ['Telegram'] ['BOT_KEY']
+#TELEGRAM BOT KEY
+BOT_KEY = config ['Telegram'] ['BOT_KEY']
+#BOT AUTH
+BOT = telebot.TeleBot(BOT_KEY)
 
-#COMMAND
-bot = telebot.TeleBot('6202663089:AAFEAGaFqRPoayB2rbZxH5Y0LvvNSsLpmJU')
+#INLINE KEYBOARD BUTTONS
+markup = types.ReplyKeyboardMarkup(row_width=2)
+item_btn_a = types.KeyboardButton('BancoCentral')
+item_btn_b = types.KeyboardButton('DolarParalelo')
+item_btn_c = types.KeyboardButton('Ambos')
+markup.add(item_btn_a, item_btn_b, item_btn_c)
 
-@bot.message_handler(commands=['start', 'help'])
+#COMMANDS
+@BOT.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-	bot.reply_to(message, "Howdy, how are you doing?")
+    BOT.reply_to(message, "Bienvenido a Dolar-Bot, Bot para ver el cambio del dolar")
+    BOT.send_message(message.chat.id, "Escoga una opción", reply_markup=markup)
 
-bot.infinity_polling()
+@BOT.message_handler(commands=['BancoCentral', 'DolarParalelo','Ambos'])
+def send_requested_info(message):
+    #La cosa de aqui que no se como hacer
+    BOT.send_message(message.chat.id, "Escoga una opción", reply_markup=markup)
 
+
+BOT.infinity_polling()
 
 # app = Flask(__name__)
 # @app.route('/')
