@@ -46,13 +46,21 @@ BOT = telebot.TeleBot(BOT_KEY)
 # BOT.infinity_polling()
 
 #SETTING 
-username = 'BCV_ORG_VE'
+#username = 'BCV_ORG_VE'
+username = 'monitordolarvla'
 tweets_list= TWITTER_API.user_timeline(screen_name = username, count=1, tweet_mode='extended')
 tweet= tweets_list[0] # An object of class Status (tweepy.models.Status)
 print(tweet.created_at) # Print the datetime object for the tweet
 print(tweet.full_text) # Print the text of the tweet
-print(tweet.in_reply_to_screen_name) # Print the username of the user the 
-# the tweet is replying to, it is None if the tweet is not a reply
+print(tweet.entities['media'][0]['media_url_https'])
+
+@BOT.message_handler(commands=['start', 'help'])
+def send_welcome(message):
+    BOT.reply_to(message, 'Bienvenido a Dolar-Bot, Bot para ver el cambio del dolar')
+    BOT.reply_to(message, tweet.entities['media'][0]['media_url_https'])
+    
+BOT.infinity_polling()
+
 
 # app = Flask(__name__)
 # @app.route('/')
