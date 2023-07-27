@@ -1,15 +1,9 @@
-from flask import Flask
-import configparser
 import telebot
+from flask import Flask
 from telebot import types
-from app.script import ref_num_list 
-
-
-
-# READ KEYS FROM CONFIG INI
-config = configparser.ConfigParser()
-config.read('config.ini')
-
+from app.__init__ import config
+from app.script import currency_list
+from app.utils.help_function import currency_format
 
 #TELEGRAM BOT KEY
 BOT_KEY = config ['Telegram'] ['BOT_KEY']
@@ -36,12 +30,12 @@ def send_welcome(message):
                  'según la pagina oficial del Banco Central de Venezuela')
     BOT.send_message(message.chat.id, 'Escoga una opción', reply_markup=markup)
     
-#Selection command, 
+#Selection command
 @BOT.message_handler(func=lambda message: True)
 def send_requested_info_by_option(message):
     
     if (message.text == option[0]):
-        BOT.reply_to(message, 'Cambios según el Banco Central de Venezuela '+ str(ref_num_list[1][1]))
+        BOT.reply_to(message, 'Cambios según el Banco Central de Venezuela '+ '\n' + currency_format(currency_list))
     elif (message.text == option[1]):
         BOT.reply_to(message, 'Cambio del dolar segun '+ option[1])
     
