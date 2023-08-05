@@ -14,8 +14,8 @@ BOT = telebot.TeleBot(BOT_KEY)
 option = ['Mostrar Cambios',
           'Calcular Cambio']
 
-#Inline keyboard buttons
-markup = types.ReplyKeyboardMarkup(row_width=2)
+#Inline keyboard option buttons
+option_markup = types.ReplyKeyboardMarkup(row_width=2)
 item_btn_a = types.KeyboardButton(option[0])
 item_btn_b = types.KeyboardButton(option[1])
 markup.add(item_btn_a, item_btn_b)
@@ -25,10 +25,10 @@ markup.add(item_btn_a, item_btn_b)
 #Start command, the command to start the bot
 @BOT.message_handler(commands=['start'])
 def send_welcome(message):
-    BOT.reply_to(message, 'Bienvenido a Dolar-Bot,' +
+    BOT.reply_to(message, 'Bienvenido a Dolar-Bot, ' +
                  'Bot para visualizar el último estado del dolar '+
                  'según la pagina oficial del Banco Central de Venezuela')
-    BOT.send_message(message.chat.id, 'Escoga una opción', reply_markup=markup)
+    BOT.send_message(message.chat.id, 'Escoga una opción', reply_markup=option_markup)
     
 #Selection command
 @BOT.message_handler(func=lambda message: True)
