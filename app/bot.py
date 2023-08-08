@@ -1,46 +1,54 @@
 import telebot
+import datetime
 from flask import Flask
 from telebot import types
 from app.__init__ import config
-from app.script import currency_list
-from app.utils.help_function import currency_format
+from app.script import currency_list, REF_NAMES
+from app.utils.help_function import currency_format, calculate_currency_exchage
 
 #TELEGRAM BOT KEY
 BOT_KEY = config ['Telegram'] ['BOT_KEY']
 #BOT AUTH
 BOT = telebot.TeleBot(BOT_KEY) 
 
-#Option variables
-option = ['Mostrar Cambios',
-          'Calcular Cambio']
-
-#Inline keyboard option buttons
-option_markup = types.ReplyKeyboardMarkup(row_width=2)
-item_btn_a = types.KeyboardButton(option[0])
-item_btn_b = types.KeyboardButton(option[1])
-markup.add(item_btn_a, item_btn_b)
-
 #Commands
 
 #Start command, the command to start the bot
 @BOT.message_handler(commands=['start'])
+
 def send_welcome(message):
     BOT.reply_to(message, 'Bienvenido a Dolar-Bot, ' +
                  'Bot para visualizar el último estado del dolar '+
                  'según la pagina oficial del Banco Central de Venezuela')
-    BOT.send_message(message.chat.id, 'Escoga una opción', reply_markup=option_markup)
     
-#Selection command
-@BOT.message_handler(func=lambda message: True)
-def send_requested_info_by_option(message):
+    BOT.reply_to(message, 'Escriba el comando : /cambios')
     
-    if (message.text == option[0]):
-        BOT.reply_to(message, 'Cambios según el Banco Central de Venezuela '+ '\n' + currency_format(currency_list))
-    elif (message.text == option[1]):
-        BOT.reply_to(message, 'Cambio del dolar segun '+ option[1])
-    
-BOT.infinity_polling()
+#Show currency changes command
+@BOT.message_handler(commands=['cambios'])
 
+def send_requested_info_by_option(message): 
+    BOT.reply_to(message, 'Cambios según el Banco Central de Venezuela '
+                     + '\n' + currency_format( currency_list ) )
+    
+    BOT.reply_to(message, '¿Desea calcular un cambio? escriba : /calcularCambio')
+
+#Select currency changes command
+@BOT.message_handler(commands=['calcularCambio'])
+
+def select_currency(message): 
+    BOT.reply_to(message, 'Para calcular el cambio selecione la moneda ' +
+                        'y luego ingrese la cantidad.' + '\n' +
+                        'Cambios: /EUR , /CNY , /TRY , /RUB , /USD ' + '\n' +
+                        'Por ejemplo : /USD 20.12')
+
+#Select currency changes command
+@BOT.message_handler(commands=REF_NAMES)
+
+def calculate_requested_currency(message): 
+    BOT.reply_to(message, 'Ingrese cantidad para calcular con cambio de : '
+                        + message.text)
+    BOT.send_message(message.chat.id, calculate_currency_exchage( currency_list, message.text ) )
+    
 
 # app = Flask(__name__)
 # @app.route('/')

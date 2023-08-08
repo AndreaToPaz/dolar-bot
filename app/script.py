@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from app.__init__ import config
 from app.utils.help_function import str_list_to_float_list
+
 #Constant
 REF_NAMES = ['EUR', 'CNY', 'TRY', 'RUB', 'USD']
 

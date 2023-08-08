@@ -29,3 +29,21 @@ def currency_format ( currency : list ) -> str :
         return ( print(e) ) 
 
  # end def
+ 
+
+def calculate_currency_exchage(currency_list : list, requested_amount : str) -> str :
+    """
+    Purpose: used the currency_list (list where the currency changes are save) to calculate
+                the amount requested (currency_list_exchange * requested_amount)
+    """
+    currency_selection = requested_amount.lstrip('/').split(' ', 1)
+    try:
+        for i in range ( len ( currency_list ) ) :
+            if (currency_list[i][0] == currency_selection[0]):
+                amount = currency_list[i][1] * float(currency_selection[1])
+                amount_stir = str('{:.2f}'.format(amount))
+        return amount_stir
+    except Exception as e:
+        return ( print(e) ) 
+    
+ # end def
