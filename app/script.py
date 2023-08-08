@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from app.__init__ import config
+from app.__init__ import config, BANK_URL
 from app.utils.help_function import str_list_to_float_list
 
 #Constant
@@ -33,6 +33,6 @@ def find_html_element_by_id ( html : str , html_tag : str , html_id : str ) ->  
 #                                                                  MAIN
 # #
 
-html =  get_html( config ['BancoDeVenezuela'] ['BANK_URL'])
+html =  get_html( BANK_URL )
 currency = find_html_element_by_id( html , 'div' , 'col-sm-6 col-xs-6 centrado' )
 currency_list = str_list_to_float_list ( currency , REF_NAMES )
